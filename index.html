@@ -2655,13 +2655,17 @@ async function sendMessage() {
     });
 
     const data = await res.json();
-    hideTyping();
-    if (!res.ok) {
-      throw new Error(data.error?.message || 'Errore API');
-    }
-    const reply = data.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
-    state.history.push({ role:'assistant', content:reply });
-    addMessage('agent', reply);
+hideTyping();
+
+if (!res.ok) {
+  console.error(data);
+  throw new Error(data.error || 'Errore API');
+}
+
+const reply = data.reply || "Errore nella risposta";
+
+state.history.push({ role: 'assistant', content: reply });
+addMessage('agent', reply);
 
     if (!state.isPro && state.messagesUsed >= state.FREE_MESSAGES) {
       setTimeout(showPaywall, 1500);
