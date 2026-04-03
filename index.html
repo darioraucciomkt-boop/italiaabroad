@@ -2643,10 +2643,16 @@ async function sendMessage() {
     const res = await fetch('https://exciting-shark-65.darioraucciomkt.deno.net/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        system: buildPrompt(state.country, state.topic),
-        messages: state.history
-      })
+   body: JSON.stringify({
+  system: buildPrompt(state.country, state.topic),
+  messages: state.history && state.history.length
+    ? state.history
+    : [
+        {
+          role: "user",
+content: String(state.input || "Ciao")        }
+      ]
+})
     });
 
     const data = await res.json();
