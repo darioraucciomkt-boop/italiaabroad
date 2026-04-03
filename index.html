@@ -2645,13 +2645,12 @@ async function sendMessage() {
       headers: { 'Content-Type': 'application/json' },
    body: JSON.stringify({
   system: buildPrompt(state.country, state.topic),
-  messages: state.history && state.history.length
-    ? state.history
-    : [
-        {
-          role: "user",
-content: String(state.input || "Ciao")        }
-      ]
+     messages: (state.history || [])
+  .filter(m => m && m.role && m.content)
+  .map(m => ({
+    role: m.role === 'agent' ? 'assistant' : m.role,
+    content: String(m.content)
+  }))
 })
     });
 
